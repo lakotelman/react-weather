@@ -12,6 +12,7 @@ import Home from "./views/Home";
 import Cities from "./views/Cities";
 import SingleCity from "./views/SingleCity";
 import Any from "./views/Any";
+import app from "./firebase";
 
 function App() {
   return (

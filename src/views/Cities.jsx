@@ -1,6 +1,6 @@
 import { DefaultLayout } from "../layouts/Default";
 import CityList from "../components/CityList";
-import AddCity from "../components/AddCity"
+import AddCity from "../components/AnyCity"
 function Cities() {
   return (
     <>

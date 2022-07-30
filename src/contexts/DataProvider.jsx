@@ -17,8 +17,37 @@ export const DataContext = createContext();
 
 export const DataProvider = (props) => {
   const { user } = useContext(AuthContext);
-  const [posts, setPosts] = useState([]);
+  const [cities, setCities] = useState([])
   const db = getFirestore();
+
+useEffect(() => {
+  if(user.loggedIn){
+  const getCities = async()=> {
+    const citiesRef = collection(db, "cities")
+    const q = query(citiesRef, where("user_id" = user.uid))
+    const querySnap = await getDocs(q)
+    querySnap.forEach((doc) =>{ 
+      console.log(doc)
+    })
+
+    
+  }
+  getCities()}
+  else{}
+}, [])
+
+  const addFavorite = async (city) => {
+    if (!user.loggedIn) {
+      new Error("You can't create a post it you are not logged in.");
+    }
+    const newFavorite = {
+      city,
+      user_id: user.id,
+    };
+    const docRef = await addDoc(collection(db, "cities"), newFavorite);
+
+    console.log("new Post added", docRef.id);
+  };
 
   function weatherCallAny(event) {
     event.preventDefault();
@@ -82,6 +111,7 @@ export const DataProvider = (props) => {
   const values = {
     weatherCallAny,
     weatherObj,
+    addFavorite,
   };
   return (
     <DataContext.Provider value={values}>{props.children}</DataContext.Provider>

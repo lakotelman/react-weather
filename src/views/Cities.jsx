@@ -1,12 +1,12 @@
 import { DefaultLayout } from "../layouts/Default";
 import CityList from "../components/CityList";
-import AddCity from "../components/AnyCity"
+import AddFavorite from "../components/AddFavorite";
 function Cities() {
   return (
     <>
-    <h1 className="text-2xl mt-4"> Add a City</h1>
-    <AddCity/>
-      <CityList/>
+      <h1 className="text-2xl mt-4"> Add a City</h1>
+      <AddFavorite />
+      <CityList />
     </>
   );
 }

@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { DataContext } from "../contexts/DataProvider";
+import WeatherCard from "./WeatherCard";
 
 export default function AnyCity() {
-  const {weatherCallAny} = useContext(DataContext)
+  const {weatherCallAny, display} = useContext(DataContext)
   return (
     <>
       
@@ -20,6 +21,7 @@ export default function AnyCity() {
           <button type="submit">Submit</button>
         </form>
       </div>
+      <WeatherCard/>
     </>
   );
 }

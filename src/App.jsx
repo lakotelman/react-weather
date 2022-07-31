@@ -23,7 +23,7 @@ function App() {
           <Route path="/any" element={<Any />} />
           <Route path="/cities">
             <Route path="" element={<Cities />} />
-            <Route path=":id" element={<SingleCity />} />
+            <Route path=":city" element={<SingleCity />} />
           </Route>
         </Routes>
       </Router>

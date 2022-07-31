@@ -7,6 +7,7 @@ import {
   addDoc,
   doc,
   getDoc,
+  where,
   Timestamp,
   query,
   orderBy,
@@ -16,25 +17,29 @@ import { AuthContext } from "./AuthProvider";
 export const DataContext = createContext();
 
 export const DataProvider = (props) => {
-  const { user } = useContext(AuthContext);
-  const [cities, setCities] = useState([])
+  const { user, auth } = useContext(AuthContext);
+  const [display, setDisplay] = useState({});
+  const [cities, setCities] = useState([]);
   const db = getFirestore();
 
-useEffect(() => {
-  if(user.loggedIn){
-  const getCities = async()=> {
-    const citiesRef = collection(db, "cities")
-    const q = query(citiesRef, where("user_id" = user.uid))
-    const querySnap = await getDocs(q)
-    querySnap.forEach((doc) =>{ 
-      console.log(doc)
-    })
-
-    
-  }
-  getCities()}
-  else{}
-}, [])
+  useEffect(() => {
+    const getCities = async () => {
+      if(!user.loggedIn){
+        return
+      }
+      const citiesRef = collection(db, "cities");
+      console.log(user)
+      const q = query(citiesRef, where("user_id", "==", user.id))
+      const querySnap = await getDocs(q);
+      let citiesArr = [];
+      querySnap.forEach((docSnap) => {
+        console.log(docSnap.data());
+        citiesArr.push(docSnap.data());
+      });
+      setCities(citiesArr);
+    };
+    getCities();
+  }, [user]);
 
   const addFavorite = async (city) => {
     if (!user.loggedIn) {
@@ -60,27 +65,37 @@ useEffect(() => {
         );
         let data = await response.json();
         console.log(data);
-        console.log(
-          weatherObj(
-            data.name,
-            Math.floor(temperatureConverter(data.main.temp)),
-            toTitleCase(data.weather[0].description),
-            data.weather[0].icon,
-            Math.floor(temperatureConverter(data.main.temp_max)),
-            Math.floor(temperatureConverter(data.main.temp_min)),
-            data.main.humidity
-          )
+        const refinedData = weatherObj(
+          data.name,
+          Math.floor(temperatureConverter(data.main.temp)),
+          toTitleCase(data.weather[0].description),
+          data.weather[0].icon,
+          Math.floor(temperatureConverter(data.main.temp_max)),
+          Math.floor(temperatureConverter(data.main.temp_min)),
+          data.main.humidity
         );
+        console.log("Result", refinedData);
+        setDisplay(refinedData);
       } catch (err) {
+        console.log(err);
         if (err instanceof TypeError) {
           displayError();
         }
       }
     };
     fetchWeatherData();
+    event.target.reset()
   }
 
-  function weatherObj(city, temperature, forecast, icon, high, low, humidity) {
+  const weatherObj = (
+    city,
+    temperature,
+    forecast,
+    icon,
+    high,
+    low,
+    humidity
+  ) => {
     city = {
       city: city,
       temperature: temperature,
@@ -91,7 +106,7 @@ useEffect(() => {
       humidity: humidity,
     };
     return city;
-  }
+  };
 
   function temperatureConverter(valNum) {
     valNum = parseFloat(valNum);
@@ -107,11 +122,41 @@ useEffect(() => {
       })
       .join(" ");
   }
+function weatherCallSaved(city) {
+  const fetchWeatherData = async () => {
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4fbf458a7369a9ca1c284ae2e7021dcc`
+      );
+      let data = await response.json();
+      console.log(data);
+      const refinedData = weatherObj(
+        data.name,
+        Math.floor(temperatureConverter(data.main.temp)),
+        toTitleCase(data.weather[0].description),
+        data.weather[0].icon,
+        Math.floor(temperatureConverter(data.main.temp_max)),
+        Math.floor(temperatureConverter(data.main.temp_min)),
+        data.main.humidity
+      );
+      console.log("Result", refinedData);
+      setDisplay(refinedData);
+    } catch (err) {
+      console.log(err);
+      if (err instanceof TypeError) {
+        displayError();
+      }
+    }
+  };
+  fetchWeatherData()
+} 
 
   const values = {
     weatherCallAny,
-    weatherObj,
+    weatherCallSaved,
+    display,
     addFavorite,
+    cities,
   };
   return (
     <DataContext.Provider value={values}>{props.children}</DataContext.Provider>

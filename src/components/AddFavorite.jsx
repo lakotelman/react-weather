@@ -32,7 +32,7 @@ export default function AddFavorite() {
               placeholder="Whereever the weather?"
             />
           </div>
-          <button type="submit">Add to Favorites</button>
+          <button className="mt-2 bg-slate-400 hover:bg-yellow-300 hover:text-slate-600 p-1.5 rounded-full" type="submit">Add to Favorites</button>
         </form>
       </div>
     </>

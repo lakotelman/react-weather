@@ -18,7 +18,7 @@ export default function AnyCity() {
             </label>
             <input type="text" name="city" id="city" className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm" placeholder="Whereever the weather?" />
           </div>
-          <button type="submit">Submit</button>
+          <button className="mt-2 bg-slate-400 hover:bg-yellow-300 hover:text-slate-600 p-1.5 rounded-full" type="submit">Submit</button>
         </form>
       </div>
       <WeatherCard/>

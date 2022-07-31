@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 
 export default function Navbar() {
-  const { logout, user } = useContext(AuthContext);
+  const { logout, user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const navigateHome = () => {
-    navigate("/any", { replace: true });
     logout();
+    setUser([{ loggedIn: false }]);
+    navigate("/", { replace: true });
   };
 
   return (

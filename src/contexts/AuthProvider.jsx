@@ -51,7 +51,7 @@ export const AuthProvider = (props) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser({
-          username: user.diplayName,
+          username: user.displayName,
           email: user.email,
           id: user.uid,
           photoURL: user.photoURL,

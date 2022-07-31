@@ -24,12 +24,12 @@ export const DataProvider = (props) => {
 
   useEffect(() => {
     const getCities = async () => {
-      if(!user.loggedIn){
-        return
+      if (!user.loggedIn) {
+        return;
       }
       const citiesRef = collection(db, "cities");
-      console.log(user)
-      const q = query(citiesRef, where("user_id", "==", user.id))
+      console.log(user);
+      const q = query(citiesRef, where("user_id", "==", user.id));
       const querySnap = await getDocs(q);
       let citiesArr = [];
       querySnap.forEach((docSnap) => {
@@ -50,8 +50,8 @@ export const DataProvider = (props) => {
       user_id: user.id,
     };
     const docRef = await addDoc(collection(db, "cities"), newFavorite);
-
-    console.log("new Post added", docRef.id);
+    setCities([...cities, newFavorite]);
+    console.log("new city added", docRef.id);
   };
 
   function weatherCallAny(event) {
@@ -84,7 +84,7 @@ export const DataProvider = (props) => {
       }
     };
     fetchWeatherData();
-    event.target.reset()
+    event.target.reset();
   }
 
   const weatherObj = (
@@ -122,34 +122,34 @@ export const DataProvider = (props) => {
       })
       .join(" ");
   }
-function weatherCallSaved(city) {
-  const fetchWeatherData = async () => {
-    try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4fbf458a7369a9ca1c284ae2e7021dcc`
-      );
-      let data = await response.json();
-      console.log(data);
-      const refinedData = weatherObj(
-        data.name,
-        Math.floor(temperatureConverter(data.main.temp)),
-        toTitleCase(data.weather[0].description),
-        data.weather[0].icon,
-        Math.floor(temperatureConverter(data.main.temp_max)),
-        Math.floor(temperatureConverter(data.main.temp_min)),
-        data.main.humidity
-      );
-      console.log("Result", refinedData);
-      setDisplay(refinedData);
-    } catch (err) {
-      console.log(err);
-      if (err instanceof TypeError) {
-        displayError();
+  function weatherCallSaved(city) {
+    const fetchWeatherData = async () => {
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4fbf458a7369a9ca1c284ae2e7021dcc`
+        );
+        let data = await response.json();
+        console.log(data);
+        const refinedData = weatherObj(
+          data.name,
+          Math.floor(temperatureConverter(data.main.temp)),
+          toTitleCase(data.weather[0].description),
+          data.weather[0].icon,
+          Math.floor(temperatureConverter(data.main.temp_max)),
+          Math.floor(temperatureConverter(data.main.temp_min)),
+          data.main.humidity
+        );
+        console.log("Result", refinedData);
+        setDisplay(refinedData);
+      } catch (err) {
+        console.log(err);
+        if (err instanceof TypeError) {
+          displayError();
+        }
       }
-    }
-  };
-  fetchWeatherData()
-} 
+    };
+    fetchWeatherData();
+  }
 
   const values = {
     weatherCallAny,
